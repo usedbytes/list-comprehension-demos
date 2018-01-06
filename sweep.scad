@@ -40,12 +40,13 @@ module sweep(shape, path_transforms, closed=false) {
 
     function loop_faces() = [let (facets=len(shape3d))
         for(s=[0:segments-1], i=[0:facets-1])
-          [(s%pathlen) * facets + i, 
-           (s%pathlen) * facets + (i + 1) % facets, 
-           ((s + 1) % pathlen) * facets + (i + 1) % facets, 
-           ((s + 1) % pathlen) * facets + i]];
+          [(s%pathlen) * facets + (i + 1) % facets,
+           (s%pathlen) * facets + i,
+           ((s + 1) % pathlen) * facets + i,
+           ((s + 1) % pathlen) * facets + (i + 1) % facets]];
 
-    bottom_cap = closed ? [] : [[for (i=[len(shape3d)-1:-1:0]) i]];
-    top_cap = closed ? [] : [[for (i=[0:len(shape3d)-1]) i+len(shape3d)*(pathlen-1)]];
+
+    bottom_cap = closed ? [] : [[for (i=[0:len(shape3d)-1]) i]];
+    top_cap = closed ? [] : [[for (i=[len(shape3d)-1:-1:0]) i+len(shape3d)*(pathlen-1)]];
     polyhedron(points = sweep_points(), faces = concat(loop_faces(), bottom_cap, top_cap), convexity=5);
 }
